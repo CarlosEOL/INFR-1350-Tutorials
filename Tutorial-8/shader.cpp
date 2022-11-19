@@ -59,6 +59,13 @@ void loadUniformVec3(GLuint shaderProgram, std::string uniformName, glm::vec3 da
 	int varLoc = glGetUniformLocation(shaderProgram, uniformName.c_str());
 	glUniform3f(varLoc, data.x, data.y, data.z);
 }
+
+void loadUniformInt1(GLuint shaderProgram, std::string uniformName, int data)
+{
+	int varLoc = glGetUniformLocation(shaderProgram, uniformName.c_str());
+	glUniform1i(varLoc, data);
+}
+
 int createFragmentShader(std::string shaderCode)
 {
 
@@ -102,3 +109,4 @@ int createVertexShader(std::string shaderCode) {
 
 	return vertexShader;
 }
+

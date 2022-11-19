@@ -16,7 +16,10 @@ const unsigned int screen_height = 768;
 //Number of Vertices
 const GLuint NumVertices = 6;
 int shaderProgram;
+
 unsigned int texture;
+unsigned int texture1;
+unsigned int texture2;
 
 void processInput(GLFWwindow* window);
 void render(struct MeshData* meshData);
@@ -97,6 +100,8 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     applyTexture(texture, "Main_Base_Color.jpg");
+    applyTexture(texture1, "Main_Base_Color.jpg");
+    applyTexture(texture2, "Gold_Brick_Base_Color.jpg");
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -167,7 +172,10 @@ void render(struct MeshData* meshData) {
     //glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(shaderProgram);
 
-    glBindTexture(GL_TEXTURE_2D, texture);
+    //glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
     view = glm::lookAt(camPos, camPos + camForward, camUp);
     transform = glm::rotate(transform, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     normalMatrix = glm::transpose(glm::inverse(transform));
@@ -195,12 +203,14 @@ void render(struct MeshData* meshData) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->indexVBO);
 
     glDrawElements(GL_TRIANGLES, meshData->triangles, GL_UNSIGNED_INT, NULL);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
     normalMatrix = glm::transpose(glm::inverse(transformSecond));
     loadUniformMat4x4(shaderProgram, "model", transformSecond);
     loadUniformMat4x4(shaderProgram, "normMat", normalMatrix);
     glDrawElements(GL_TRIANGLES, 3 * meshData->triangles, GL_UNSIGNED_INT, NULL);
-    
-
 }
 
 
@@ -213,12 +223,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 
 void applyTexture(unsigned int& texture, std::string fileName) {
+    glGenerateMipmap(GL_TEXTURE_2D);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture); // The texture object is applied with all the texture operations
 
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // set GL_REPEAT as the wrapping method
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT); // set GL_REPEAT as the wrapping method
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     // texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

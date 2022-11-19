@@ -5,6 +5,7 @@ in vec3 vertPos;
 in vec3 normal;
 in vec3 fragPos;
 in vec2 TexCoord;
+
 // texture sampler
 uniform sampler2D texture1;
 uniform vec3 eyePos;
@@ -36,6 +37,4 @@ void main()
 
    vec3 totalLight = (ambientLight + diffuseLight + specularLight) * objectColour;
    FragColor = vec4(totalLight, 1.0f);
-
-   
 }
